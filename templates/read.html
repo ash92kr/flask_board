@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block body_block%}
+    <h1>{{post.id}}</h1>
+    <h1>{{post.title}}</h1>
+    <h1>{{post.content}}</h1>
+    <h1>{{post.created_at}}</h1>
+    <a href="/posts/{{post.id}}/delete">삭제</a>  <!--특정 글만 삭제하기-->
+    <a href="/posts/{{post.id}}/edit">수정</a>
+{% endblock %}

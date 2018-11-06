@@ -1,0 +1,19 @@
+{% extends 'base.html' %}  <!-- base.html을 먼저 부름-->
+
+{% block body_block%}  <!-- block 부분에 아래 부분을 넣음-->
+    <h1>여기는 인덱스 입니다.</h1>
+
+    <div class="row">
+    {% for post in posts %}  <!--posts의 리스트 구조를 하나씩 돈다-->
+      <div class="col-sm">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">{{post.title}} title</h5>
+            <p class="card-text">{{post.content}}</p>
+            <a href="/posts/{{post.id}}" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>          
+    {% endfor %}
+    </div>
+{% endblock %}

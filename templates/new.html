@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block body_block %}
+
+    <!--<form action="/posts/create">-->   <!--create에 있는 사이트로 전송할 것을 요청-->
+    <!--    <input type="text" name="title">-->
+    <!--    <input type="text" name="content">-->
+    <!--    <input type="submit">-->
+    <!--</form>-->
+    <form action="/posts/create" method="post"> 
+      <div class="form-group">
+        <label for="title">제목</label>  <!--label 제목을 클릭하면 해당 id에 커서가 자동 입력되게 함-->
+        <input name="title" type="text" class="form-control" id="title" placeholder="제목을 입력해주세요!">  <!--placeholder = 아무 것도 입력하지 않았을 때 보여주는 값-->
+      </div>
+      <div class="form-group">
+        <label for="content">내용</label>  <!--label과 id가 동일함-->
+        <textarea name="content" id="content" class="form-control"></textarea>  <!-- 속성값의 순서는 상관없음-->
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>  <!--type을 email이나 password로 지정하면 알아서 타입을 검사함-->
+{% endblock %}
