@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 from models import *   # models.py의 내용 전체를 불러온다
+import os
 
 app = Flask(__name__)  # flask를 가장 처음 만들 때 적어야 한다
 
 # DB 설정
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///board'   # 내가 설정한 DB이름으로 적기
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///board'   # 내가 설정한 DB이름으로 적기
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(('DATABASE_URL'))   # heroku에서 DB를 가져오기 위해서 상수가 아닌 변수로 URL 주소 지정
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 db.init_app(app)   # models.py에서 설정한 db를 가져옴
 migrate = Migrate(app, db)
