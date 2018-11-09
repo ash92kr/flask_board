@@ -8,8 +8,8 @@ import os
 app = Flask(__name__)  # flask를 가장 처음 만들 때 적어야 한다
 
 # DB 설정
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///board'   # 내가 설정한 DB이름으로 적기
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(('DATABASE_URL'))   # heroku에서 DB를 가져오기 위해서 상수가 아닌 변수로 URL 주소 지정
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///board'   # 내가 설정한 DB이름으로 적기
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(('DATABASE_URL'))   # heroku에서 DB를 가져오기 위해서 상수가 아닌 변수로 URL 주소 지정
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 db.init_app(app)   # models.py에서 설정한 db를 가져옴
 migrate = Migrate(app, db)
@@ -47,6 +47,8 @@ def create():
 @app.route('/posts/<int:id>')  # integer 형식만 받고, id만 들어올 수 있다(사용자가 요청하는 주소를 route가 받음)
 def read(id):   # int로 받은 id를 read에 전달함 - read 메소드 실행
     post = Post.query.get(id)  # 가지고 올 id를 찾아 post에 저장  SELECT * FROM posts WHERE id=1;
+    comments = Comment.query.all()  # 모든 카드에 모든 댓글을 보여준다
+    
     return render_template('read.html', post=post)  # id와 post를 같이 read.html에 전달
 
 
@@ -81,4 +83,28 @@ def update(id):
 # get 방식 사용자의 정보가 주소 표시줄에 실려서 나감 -> 어떤 데이터를 가져올 때 사용
 # post 방식은 서버로 데이터를 보낼 때 사용 -> url에 아무 것도 찍히지 않고 ? 앞 부분의 주소만 출력됨      
      
-     
+
+# 댓글 기능 CR
+@app.route("/posts/<int:post_id>/comments", methods=["POST"])  # post_id가 출력될 것
+def comments(post_id):
+    content = request.form.get('content')   # requests는 외부의 정보 크롤링할 때 사용함, content는 사용자가 입력한 댓글 -> get 방식
+    creator = request.form.get('creator')
+    comment = Comment(content, creator)   # Comment는 클래스를 생성하는 행위 -> 안의 content는 내부의 comment로 이동함
+
+    post = Post.query.get(post_id)
+    post.comments.append(comment)   # comments 테이블에 post_id를 알려주기 위해 추가
+
+    db.session.add(comment)
+    db.session.commit()
+    
+    return redirect('/')
+    
+    
+# 댓글 삭제(delete)
+@app.route('/comment/<int:id>/delete')
+def comment_delete(id):
+    comment = Comment.query.get(id)   # comment.id를 저장함
+
+    db.session.delete(comment)  
+    db.session.commit()
+    return redirect('/')
